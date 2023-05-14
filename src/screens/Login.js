@@ -1,35 +1,50 @@
-import React, {useState} from 'react';
-import { TouchableOpacity,View, Text } from 'react-native';
-import Background from '../constants/login/login_background';
-import TextInput from '../constants/login/input';
-import Button from '../constants/login/Button';
-import { checkemail } from '../constants/login/checkemail';
-import { checkpw } from '../constants/login/checkpw';
-export default function Login({ navigation }) {
-	const [email, setEmail] = useState({ value: '', error: '' })
-  	const [password, setPassword] = useState({ value: '', error: '' })
+import React, { useState } from 'react';
+import { TouchableOpacity, View, Text, ImageBackground, StyleSheet } from 'react-native';
+import { EscapeButton, UIButton, UIInput } from '../components';
+import { checkEmail, checkPwd } from '../utils';
+import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
-  	const onLoginPressed = () => {
-    const emailError = checkemail(email.value)
-    const passwordError = checkpw(password.value)
-    if (emailError || passwordError) {
-      setEmail({ ...email, error: emailError })
-      setPassword({ ...password, error: passwordError })
-      return
-    }
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Dashboard' }],
-    })
-  }
+export default function LoginScreen() {
+	const navigation = useNavigation();
+
+	const [email, setEmail] = useState({ value: '', error: '' });
+	const [password, setPassword] = useState({ value: '', error: '' });
+
+	const onLoginPressed = () => {
+		const emailError = checkEmail(email.value);
+		const passwordError = checkPwd(password.value);
+		if (emailError || passwordError) {
+			setEmail({ ...email, error: emailError });
+			setPassword({ ...password, error: passwordError });
+			return;
+		}
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [{ name: 'Main' }],
+			})
+		);
+	};
+	// const bgImage = { uri: '../../assets/images/login_signup.png' };
 	return (
-		<Background>
+		<ImageBackground
+			source={require('../../assets/login_signup.png')}
+			resizeMode="cover"
+			style={{
+				flex: 1,
+				backgroundColor: '#C7D7A7',
+				backgroundSize: '50%',
+				flexDirection: 'column',
+				alignItems: 'center',
+				padding: 10,
+			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>
 				<Text style={{ fontSize: 64 }}>FARM</Text>
 			</View>
 			<Text style={styles.title1}>Sign in and {'\n'}manage your farm remotely today!</Text>
-			<TextInput
+			<UIInput
 				label="Email"
 				returnKeyType="next"
 				value={email.value}
@@ -41,7 +56,7 @@ export default function Login({ navigation }) {
 				textContentType="emailAddress"
 				keyboardType="email-address"
 			/>
-			<TextInput
+			<UIInput
 				label="Password"
 				returnKeyType="done"
 				value={password.value}
@@ -51,54 +66,61 @@ export default function Login({ navigation }) {
 				secureTextEntry
 			/>
 			<View style={styles.forgotPassword}>
-				<TouchableOpacity onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-					<Text style={styles.link}>Forgot your password?</Text>
+				<TouchableOpacity onPress={() => navigation.navigate('ForgotPwd')}>
+					<Text style={styles.forgotPassword}>Forgot your password?</Text>
 				</TouchableOpacity>
 			</View>
-			<Button mode="contained" onPress={onLoginPressed}>
-				Login
-			</Button>
+			<UIButton mode="contained" onPress={onLoginPressed}>
+				<Text>Login</Text>
+			</UIButton>
 			<View style={styles.row}>
-				<Text style={styles.text}>Don’t have an account yet? </Text>
-				<TouchableOpacity onPress={() => navigation.replace('SignUpScreen')}>
+				<Text style={styles.text}>Don't have an account yet? </Text>
+				<TouchableOpacity onPress={() => navigation.navigate('Signup')}>
 					<Text style={styles.link}>Sign up</Text>
 				</TouchableOpacity>
 			</View>
-		</Background>
+		</ImageBackground>
 	);
 }
 
 const styles = StyleSheet.create({
-	title:{
-		fontFamily: 'Lexend', 
-		fontWeight: '500', 
-		margin:5,
-		marginTop: 15, 
+	title: {
+		// fontFamily: 'Lexend',
+		width: '80%',
+		fontWeight: '500',
+		margin: 5,
+		marginTop: 45,
 		marginLeft: 8,
-		color: '#34291D'
-	},
-	title1:{
-		fontFamily: 'Lexend',
-		fontWeight: 500,
-		fontSize: 18,
-		marginTop: 5,
 		color: '#34291D',
 	},
-  forgotPassword: {
-    width: '100%',
-    marginBottom: 24,
-  },
-  row: {
-    flexDirection: 'row',
-    marginTop: 4,
-  },
-  text: {
-    fontSize: 13,
-    color: '#34291D',
-  },
-  link: {
-    fontSize: 13,
-	fontWeight: 'bold',
-    color: '#34291D',
-  },
-})
+	title1: {
+		// fontFamily: 'Lexend',
+		width: '100%',
+		fontWeight: '500',
+		fontSize: 18,
+		marginTop: 5,
+		marginLeft: 20,
+		color: '#34291D',
+	},
+	forgotPassword: {
+		width: '100%',
+		marginBottom: 24,
+		marginLeft: 15,
+		fontSize: 20,
+		fontWeight: '500',
+		color: '#34291D',
+	},
+	row: {
+		flexDirection: 'row',
+		marginTop: 4,
+	},
+	text: {
+		fontSize: 13,
+		color: '#34291D',
+	},
+	link: {
+		fontSize: 13,
+		fontWeight: '500',
+		color: '#34291D',
+	},
+});

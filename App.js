@@ -1,72 +1,33 @@
 import 'react-native-gesture-handler';
 import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import Home from './src/screens/Home';
-// import Settings from './src/screens/Settings';
-import Notifications from './src/screens/Notifications';
-import Statistics from './src/screens/Statistics';
-import Profile from './src/screens/Profile';
-// import EditProfile from './src/screens/EditProfile.JS';
-// import EditProfile from './src/screens/EditProfile';
-import BottomTabNavigator from './TabNavigator';
+import { BottomTabNavigator } from './MainScreen';
+import ForgotPassword from './src/screens/ForgotPassword';
 
-const Tab = createBottomTabNavigator();
+// import Home from './src/screens/Home';
+import { LoginNavigator } from './StackNavigator';
+// const Tab = createBottomTabNavigator();
+// const Stack = createStackNavigator();
+import MainScreen from './MainScreen';
+import LoginScreen from './src/screens/Login';
+
 const Stack = createStackNavigator();
-
-// const screenOptionStyle = {
-// 	headerStyle: {
-// 	  backgroundColor: "#9AC4F8",
-// 	},
-// 	headerTintColor: "white",
-// 	headerBackTitle: "Back",
-//   };
+// const Tab = createBottomTabNavigator();
 
 export default function App() {
 	return (
+		// <NavigationContainer>
+		// 	<BottomTabNavigator />
+		// </NavigationContainer>
 		<NavigationContainer>
-			{/* <Tab.Navigator
-				initialRouteName={Home}
-				screenOptions={({ route }) => ({
-					tabBarIcon: ({ focused, color, size }) => {
-						let iconName;
-
-						switch (route.name) {
-							case 'Home':
-								iconName = focused ? 'home' : 'home-outline';
-								break;
-							case 'Statistics':
-								iconName = focused ? 'bar-chart' : 'bar-chart-outline';
-								break;
-							case 'Notifications':
-								iconName = focused ? 'notifications' : 'notifications-outline';
-								break;
-							// case 'Settings':
-							// 	iconName = focused ? 'settings' : 'settings-outline';
-							// 	break;
-							case 'Profile':
-								iconName = focused ? 'settings' : 'settings-outline';
-								break;
-							// default:
-							// 	iconName = undefined;
-						}
-
-						return <Ionicons name={iconName} size={size} color={color} />;
-					},
-					headerStyle: { backgroundColor: 'papayawhip' },
-				})}>
-				<Tab.Screen name="Home" component={Home} />
-				<Tab.Screen name="Statistics" component={Statistics} />
-				<Tab.Screen name="Notifications" component={Notifications} options={{ tabBarBadge: 3 }} />
-				{/* <Tab.Screen name="Settings" component={Settings} /> */}
-				{/* <Tab.Screen name="Profile" component={MainStackNavigator} /> */}
-				{/* <Tab.Screen name="EditProfile" component={EditProfile} /> */}
-			{/* </Tab.Navigator> */} 
-			<BottomTabNavigator></BottomTabNavigator>
-			
+			<Stack.Navigator screenOptions={{ headerShown: false }}>
+				<Stack.Screen name="LoginScreen" component={LoginNavigator} />
+				{/* <Stack.Screen name="ForgotPwd" component={ForgotPassword} /> */}
+				<Stack.Screen name="Main" component={MainScreen} />
+			</Stack.Navigator>
 		</NavigationContainer>
-
 	);
 }
