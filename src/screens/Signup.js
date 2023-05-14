@@ -4,7 +4,7 @@ import { Text } from 'react-native-paper';
 import { checkName, checkEmail, checkPwd,auth } from '../utils';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { UIButton, UIInput, EscapeButton } from '../components';
-
+import { CommonActions } from '@react-navigation/native';
 export default function SignupScreen({ navigation }) {
 	const [name, setName] = useState({ value: '', error: '' });
 	const [email, setEmail] = useState({ value: '', error: '' });
@@ -23,6 +23,7 @@ export default function SignupScreen({ navigation }) {
 		createUserWithEmailAndPassword(auth, email, password)
 			.then((userCredential) => {
 				// Signed in
+				const user=userCredential.user
 				setName({ value:name.value, error: '' });
 				setEmail({value:email.value, error:''})
 				// ...
