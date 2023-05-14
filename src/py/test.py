@@ -5,19 +5,19 @@ import random
 from firebase import firebase
 from datetime import date, datetime
 import pytz
-
-
-FEED_LST = ["bbc-fan", "bbc-led", "bbc-pump", "bbc-temp"]
+from flask import Flask, jsonify, render_template
+from flask_cors import CORS
+from datetime import datetime
+FEED_LST = ["v1", "v2", "v3", "v4"]
 USERNAME = "IOTFarm_222"
-KEY = "aio_Snww48prmq6tnihUsDGx70xRGlOw"
+KEY = "aio_Latc14lxX9nPWZGkhHYtqcfcZLKm"
 stat=0
-
+# Firebase Connection
+firebase = firebase.FirebaseApplication("https://iotfarm-c345c-default-rtdb.firebaseio.com/", None)
 def connected(client:MQTTClient):
+    print("Ket noi thanh cong")
     for i in FEED_LST:
-        try:
-            client.subscribe(i)
-            print("Success connect to "+ i)
-        except: print("Failed to connect to "+i)
+        client.subscribe(i)
         
 # get 1 data point from feed
 # param: clientMQTT, feed_id
@@ -61,27 +61,56 @@ def subscribe(client , userdata , mid , granted_qos):
 
 def disconnected(client):
     print("Disconnect")
-    sys.exit (1)
+    sys.exit(1)
 
 def message(client , feed_id , payload):
-    global stat
     print("Data received from " + feed_id  + ': ' + payload)
-    # if feed_id=="V16":
-    #     stat=payload   #data duoc luu trong bien stat
-    # elif feed_id=="V1":
-    #     client.publish("V16",max(int(stat),1))
+    if feed_id == 'v1':
+        firebase.post('/Temperature', {
+            "value": payload,
+            "datetime" : str(datetime.now())
+        })
+    elif feed_id == 'v2':
+        firebase.post('/Humidity', {
+            "value": payload,
+            "datetime" : str(datetime.now())
+        })
+    elif feed_id == 'v3':
+        firebase.post('/SoilMoisture', {
+            "value": payload,
+            "datetime" : str(datetime.now())
+        })
+    elif feed_id == 'v4':
+        firebase.post('/Lumination', {
+            "value": payload,
+            "datetime" : str(datetime.now())
+        })
 
-clientMQTT = MQTTClient(USERNAME , KEY) # client nay dung de gui va nhan 1 du lieu den feed
-clientHistory = Client(USERNAME, KEY) # client nay dung de lay du lieu lich su cua feed
-clientMQTT.on_connect = connected
-clientMQTT.on_disconnect = disconnected
-clientMQTT.on_message = message
-clientMQTT.on_subscribe = subscribe
-clientMQTT.connect()
-clientMQTT.loop_background()
+# clientMQTT = MQTTClient(USERNAME , KEY) # client nay dung de gui va nhan 1 du lieu den feed
+# clientHistory = Client(USERNAME, KEY) # client nay dung de lay du lieu lich su cua feed
+# clientMQTT.on_connect = connected
+# clientMQTT.on_disconnect = disconnected
+# clientMQTT.on_message = message
+# clientMQTT.on_subscribe = subscribe
+# clientMQTT.connect()
+# clientMQTT.loop_background()
 
-# Firebase Connection
-firebase = firebase.FirebaseApplication("https://iotfarm-c345c-default-rtdb.firebaseio.com/", None)
+app = Flask(__name__)
+#    db = firebaseCon['iotfarm-c345c-default-rtdb']
+CORS(app)
+
+@app.route('/')
+def index():
+    return render_template('Home.js')
+@app.route('/getLastData/Temperature', methods=['GET'])
+def getLastData():
+    # rel = firebase.get('', '')
+    rel = firebase.get("/Temperature/",'')
+    print(rel)
+    keys = list(rel.keys())
+    last_key = keys[-1]
+    return rel[last_key]
+
 
 
 # dayTemp= []
@@ -89,22 +118,26 @@ firebase = firebase.FirebaseApplication("https://iotfarm-c345c-default-rtdb.fire
 # if midnight, add list of that days
 
 # ì end month, add list day temp,
-
+app.debug = True
+app.run()
 
 def main():
     while True:
+        pass
+    '''
+    while True:
         # Get all from ada and send all data to firebase
-        tempAll = get_history(clientHistory, 'bbc-temp')
+        tempAll = get_history(clientHistory, 'v1')
         # print(tempAll)
-        firebase.post("iotfarm-c345c-default-rtdb/Temperature",  tempAll)
-        humidityAll = get_history(clientHistory, 'bbc-fan')
-        firebase.post("iotfarm-c345c-default-rtdb/Humidity",  humidityAll)
-        luminousityAll = get_history(clientHistory, 'bbc-led')
-        firebase.post("iotfarm-c345c-default-rtdb/Luminousity",  luminousityAll)
-        moistureAll = get_history(clientHistory, 'bbc-pump')
-        firebase.post("iotfarm-c345c-default-rtdb/Moisture",  moistureAll)
+        firebase.post("/Temperature",  tempAll)
+        humidityAll = get_history(clientHistory, 'v2')
+        firebase.post("/Humidity",  humidityAll)
+        luminousityAll = get_history(clientHistory, 'v4')
+        firebase.post("/Luminousity",  luminousityAll)
+        moistureAll = get_history(clientHistory, 'v3')
+        firebase.post("/Moisture",  moistureAll)
         print("----------------------------")
-        time.sleep(15)
+        time.sleep(30)
 
         # Get last data from ada
         # temp = get_status(clientHistory, 'bbc-temp') 
@@ -112,6 +145,8 @@ def main():
         # Get data from firebase
         # rel = firebase.get("iotfarm-c345c-default-rtdb/Temperature",'')
         # print(rel)
-
+    '''
+# if __name__ == "__main__":
 main()
+
    

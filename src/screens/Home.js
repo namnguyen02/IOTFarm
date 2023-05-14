@@ -21,11 +21,26 @@ const BoxLayout = (props) => {
 	const { bgcolor, iconName } = props;
 	const [state, setState] = useState(0);
 
+	const [data, setData] = useState([]);
+
+	useEffect(() => {
+	  const fetchData = async () => {
+		const response = await fetch(
+		  'http://127.0.0.1:5000/getLastData/Temperature'
+		);
+  
+		const result = await response.json();
+		console.log(result)
+		setData(result);
+	  };
+  
+	  fetchData();
+	}, []);
 	return (
 		<View style={[styles.box, { backgroundColor: bgcolor }]}>
 			<View style={styles.info}>
 				<Text style={{ color: '#fff', fontSize: 16 }}>Temparature</Text>
-				<Text style={{ color: '#fff', fontSize: 48 }}>23</Text>
+				<Text style={{ color: '#fff', fontSize: 48 }}>{JSON.stringify(data)}</Text>
 				<Text style={{ color: '#fff', fontSize: 14 }}>{'\u00B0'}C</Text>
 			</View>
 			<View style={{ height: 100, width: 2, backgroundColor: '#FFFFFFB3' }} />
@@ -38,7 +53,7 @@ const BoxLayout = (props) => {
 				<TouchableOpacity style={styles.button} onPress={() => setState(!state)}>
 					<View style={styles.line}>
 						<MaterialCommunityIcons name={iconName} size={20} color={bgcolor} />
-						<Text style={{ color: bgcolor, fontWeight: 700, marginHorizontal: 7 }}>
+						<Text style={{ color: bgcolor, fontWeight: "700", marginHorizontal: 7 }}>
 							{state ? 'ON' : 'OFF'}
 						</Text>
 					</View>
@@ -96,15 +111,12 @@ function Home() {
 	const [value, setValue] = useState('first');
 	const [option, setOption] = useState(false);
 
-	const [data, setData] = useState([])
-	useEffect(() => {
-		fetch('')
-	})
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
 				<View>
-					<Text style={{ fontSize: 20, fontWeight: 700 }}>Have a good day!</Text>
+					<Text style={{ fontSize: 20, fontWeight: "700" }}>Have a good day!</Text>
 					<Text style={{ color: '#838A8F', fontSize: 14 }}>{dateInString}</Text>
 				</View>
 				{/* <TouchableHighlight onPress={() => {}}>
