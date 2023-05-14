@@ -21,27 +21,38 @@ const BoxLayout = (props) => {
 	const { bgcolor, iconName } = props;
 	const [state, setState] = useState(0);
 
-	const [data, setData] = useState([]);
+	const [data, setData] = useState();
 
-	useEffect(() => {
-	  const fetchData = async () => {
-		const response = await fetch(
-		  'http://127.0.0.1:5000/getLastData/Temperature'
-		);
-  
-		const result = await response.json();
-		console.log(result)
-		setData(result);
-	  };
-  
-	  fetchData();
-	}, []);
+	React.useEffect(()=>{
+        
+
+		fetch('https://73de-1-53-54-255.ngrok-free.app/getLastData/Temperature', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+		})
+		.then((resp) => {
+			return resp.json();
+		})
+		.then((jsonData) => {
+			console.log("------>")
+			console.log(jsonData["value"])
+			setData(jsonData["value"])
+		})  
+		.catch((error) => {
+			console.log(error);
+		})
+          
+
+
+    },[])
 	return (
 		<View style={[styles.box, { backgroundColor: bgcolor }]}>
 			<View style={styles.info}>
 				<Text style={{ color: '#fff', fontSize: 16 }}>Temparature</Text>
-				<Text style={{ color: '#fff', fontSize: 48 }}>{JSON.stringify(data)}</Text>
-				<Text style={{ color: '#fff', fontSize: 14 }}>{'\u00B0'}C</Text>
+				<Text style={{ color: '#fff', fontSize: 48 }}>{data}</Text>
+				<Text style={{ color: '#fff', fontSize: 14 }}>{'\u00B0'}C</Text>	
 			</View>
 			<View style={{ height: 100, width: 2, backgroundColor: '#FFFFFFB3' }} />
 			<View style={styles.info}>
