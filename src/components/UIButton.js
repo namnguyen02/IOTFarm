@@ -2,12 +2,11 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Button } from 'react-native-paper';
 
-export default function Button({ mode, style, ...props }) {
+export function UIButton({ mode, style, ...props }) {
 	return (
 		<Button
 			style={[
 				styles.button,
-				mode === 'outlined' && { backgroundColor: '#6C5A45' },
 				style, //alternate setting
 			]}
 			labelStyle={styles.text}
@@ -19,15 +18,15 @@ export default function Button({ mode, style, ...props }) {
 
 const styles = StyleSheet.create({
 	button: {
-		width: '80%',
-		marginVertical: 10,
-		paddingVertical: 2,
-        borderRadius:9,
+		width: '95%',
+		paddingTop: 8,
+		backgroundColor: '#6C5A45',
+		height: 54,
 	},
 	text: {
-		fontWeight: 'bold',
-        fontFamily:'Lexend',
-		fontSize: 18,
-		lineHeight: 14,
+		fontWeight: '500',
+		// fontFamily: 'Lexend',
+		color: 'white',
+		fontSize: 20,
 	},
 });
