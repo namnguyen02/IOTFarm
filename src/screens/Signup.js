@@ -20,7 +20,7 @@ export default function SignupScreen({ navigation }) {
 			setPassword({ ...password, error: passwordError });
 			return;
 		}
-		createUserWithEmailAndPassword(auth, email, password)
+		createUserWithEmailAndPassword(auth, email.value, password.value)
 			.then((userCredential) => {
 				// Signed in
 				const user=userCredential.user
