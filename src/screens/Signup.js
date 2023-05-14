@@ -27,6 +27,12 @@ export default function SignupScreen({ navigation }) {
 				setName({ value:name.value, error: '' });
 				setEmail({value:email.value, error:''})
 				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -34,14 +40,6 @@ export default function SignupScreen({ navigation }) {
 				setEmail({value:email.value, error:errorMessage});
 				// ..
 			});
-		if (email.error===''){
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 0,
-					routes: [{ name: 'Main' }],
-				})
-			);
-		}
 	};
 	const bgImage = { uri: '../../assets/login_signup.png' };
 	return (

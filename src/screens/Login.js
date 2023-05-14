@@ -25,21 +25,19 @@ export default function LoginScreen() {
 				// Signed in
 				setEmail({value:email.value, error:''})
 				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
 				setEmail({value:email.value, error:errorMessage});
-				
+				return
 			});
-		if (email.error===''){
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 0,
-					routes: [{ name: 'Main' }],
-				})
-			);
-		}
 	};
 	// const bgImage = { uri: '../../assets/images/login_signup.png' };
 	return (

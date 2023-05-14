@@ -12,6 +12,7 @@ export default function ForgotPassword({ navigation }) {
 			.then(() => {
 				// Password reset email sent!
 				// ..
+				navigation.navigate('LoginScreen');
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -19,10 +20,6 @@ export default function ForgotPassword({ navigation }) {
 				setEmail({value:email.value,error:errorMessage})
 				// ..
 			});
-		if (email.error===''){
-			navigation.navigate('LoginScreen');
-		}
-		
 	};
 	return (
 		<ImageBackground
