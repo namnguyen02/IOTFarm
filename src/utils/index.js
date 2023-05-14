@@ -1,5 +1,5 @@
 import { checkEmail } from './checkEmail';
 import { checkPwd } from './checkPwd';
 import { checkName } from './checkName';
-
-export { checkEmail, checkName, checkPwd };
+import { auth } from './firebase';
+export { checkEmail, checkName, checkPwd,auth };

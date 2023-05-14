@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { Text } from 'react-native-paper';
-import { checkName, checkEmail, checkPwd } from '../utils';
+import { checkName, checkEmail, checkPwd,auth } from '../utils';
+import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { UIButton, UIInput, EscapeButton } from '../components';
 
 export default function SignupScreen({ navigation }) {
@@ -19,10 +20,27 @@ export default function SignupScreen({ navigation }) {
 			setPassword({ ...password, error: passwordError });
 			return;
 		}
-		navigation.reset({
-			index: 0,
-			routes: [{ name: 'Main' }], // navigate to landing page here
-		});
+		createUserWithEmailAndPassword(auth, email, password)
+			.then((userCredential) => {
+				// Signed in
+				setName({ value:name.value, error: '' });
+				setEmail({value:email.value, error:''})
+				// ...
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				setEmail({value:email.value, error:errorMessage});
+				// ..
+			});
+		if (email.error===''){
+			navigation.dispatch(
+				CommonActions.reset({
+					index: 0,
+					routes: [{ name: 'Main' }],
+				})
+			);
+		}
 	};
 	const bgImage = { uri: '../../assets/login_signup.png' };
 	return (
