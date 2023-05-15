@@ -2,12 +2,20 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Avatar } from 'react-native-elements';
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import EditProFile from './EditProFile';
+import { signOut, getAuth } from 'firebase/auth';
+import { auth } from '../utils';
 
 export default function Profile({ navigation }) {
 	const [state, setState] = useState(0);
+	const auth = getAuth();
+	const user = auth.currentUser;
+	const logOut = async () => {
+		await signOut(auth);
+		navigation.reset({
+			index: 0,
+			routes: [{ name: 'LoginScreen' }],
+		})
+	}
 	return (
 		<View style={styles.container}>
 			<View style={styles.header}>
@@ -23,7 +31,7 @@ export default function Profile({ navigation }) {
 					containerStyle={{ backgroundColor: 'grey' }}>
 					<Avatar.Accessory size={23} onPress={() => navigation.navigate('EditProFile')} />
 				</Avatar>
-				<Text style={{ fontSize: 25, paddingTop: 10 }}>Harmony</Text>
+				<Text style={{ fontSize: 25, paddingTop: 10 }}>{user.displayName}</Text>
 				<Text style={{ color: '#838A8F' }}>Smart User</Text>
 			</View>
 
@@ -45,7 +53,7 @@ export default function Profile({ navigation }) {
 			</View>
 			<View style={styles.itemlist}>
 				<MaterialCommunityIcons name="logout" size={25} />
-				<Text style={{ fontSize: 25, marginLeft: 20 }} onPress={() => navigation.replace('Login')}>
+				<Text style={{ fontSize: 25, marginLeft: 20 }} onPress={logOut}>
 					Sign Out
 				</Text>
 			</View>

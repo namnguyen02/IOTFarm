@@ -23,23 +23,35 @@ export default function LoginScreen() {
 		signInWithEmailAndPassword(auth, email.value, password.value)
 			.then((userCredential) => {
 				// Signed in
+				const user = userCredential.user
+				console.log(userCredential)
 				setEmail({value:email.value, error:''})
 				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
 				const errorMessage = error.message;
+				console.log(error)
+				
 				setEmail({value:email.value, error:errorMessage});
+				return;
 				
 			});
-		if (email.error===''){
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 0,
-					routes: [{ name: 'Main' }],
-				})
-			);
-		}
+		// if (email.error===''){
+		// 	navigation.dispatch(
+		// 		CommonActions.reset({
+		// 			index: 0,
+		// 			routes: [{ name: 'Main' }],
+		// 		})
+		// 	);
+		// }
+		
 	};
 	// const bgImage = { uri: '../../assets/images/login_signup.png' };
 	return (
@@ -53,6 +65,7 @@ export default function LoginScreen() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%'
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>

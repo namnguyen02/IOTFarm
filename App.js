@@ -24,9 +24,9 @@ export default function App() {
 		// </NavigationContainer>
 		<NavigationContainer>
 			<Stack.Navigator screenOptions={{ headerShown: false }}>
-				<Stack.Screen name="LoginScreen" component={LoginNavigator} />
+				<Stack.Screen name="LoginScreen" component={LoginNavigator} options={{ headerShown: false  }}/>
 				{/* <Stack.Screen name="ForgotPwd" component={ForgotPassword} /> */}
-				<Stack.Screen name="Main" component={MainScreen} />
+				<Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false  }}/>
 			</Stack.Navigator>
 		</NavigationContainer>
 	);

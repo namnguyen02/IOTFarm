@@ -35,6 +35,7 @@ export default function ForgotPassword({ navigation }) {
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%',
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>

@@ -4,6 +4,7 @@ import { Text } from 'react-native-paper';
 import { checkName, checkEmail, checkPwd,auth } from '../utils';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { UIButton, UIInput, EscapeButton } from '../components';
+import { CommonActions } from '@react-navigation/native';
 
 export default function SignupScreen({ navigation }) {
 	const [name, setName] = useState({ value: '', error: '' });
@@ -20,9 +21,12 @@ export default function SignupScreen({ navigation }) {
 			setPassword({ ...password, error: passwordError });
 			return;
 		}
-		createUserWithEmailAndPassword(auth, email, password)
+		createUserWithEmailAndPassword(auth, email.value, password.value)
 			.then((userCredential) => {
 				// Signed in
+				const user=userCredential.user
+				user.displayName = name.value
+				console.log(user)
 				setName({ value:name.value, error: '' });
 				setEmail({value:email.value, error:''})
 				// ...
@@ -49,10 +53,13 @@ export default function SignupScreen({ navigation }) {
 			style={{
 				flex: 1,
 				backgroundColor: '#C7D7A7',
-				backgroundSize: '50%',
+				backgroundSize: 'cover',
+				backgroundosition: 'center',
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%',
+				// width: '50%'
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>
