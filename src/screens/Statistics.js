@@ -1,47 +1,52 @@
 import React from 'react';
-import { View, Text, Dimensions, ScrollView } from 'react-native';
-import { LineChart } from 'react-native-chart-kit';
+import { View, Text, FlatList, StyleSheet, StatusBar } from 'react-native';
+import {
+	DailyHumiChart,
+	DailyTempChart,
+	DailySoMoChart,
+	DailyLumiChart,
+} from '../components/DailyChart';
 
-const screenWidth = Dimensions.get('window').width;
+const data = [
+	{ id: 'temp', name: 'Temperature', chart: <DailyTempChart /> },
+	{ id: 'humi', name: 'Humidity', chart: <DailyHumiChart /> },
+	{ id: 'somo', name: 'Soil Moisture', chart: <DailySoMoChart /> },
+	{ id: 'lumi', name: 'Luminosity', chart: <DailyLumiChart /> },
+];
 
-const chartConfig = {
-	backgroundGradientFrom: '#FFFFFF',
-	backgroundGradientTo: '#FFFFFF',
-	decimalPlaces: 2,
-	color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-	barPercentage: 0,
-	useShadowColorFromDataset: true,
-};
-
-const data = {
-	labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-	datasets: [
-		{
-			data: [24, 25, 23, 30, 32, 27, 29],
-			color: (opacity = 1) => `rgba(35, 179, 113, ${opacity})`, // optional
-		},
-	],
-};
-
-export default function Settings() {
+export default function Statistics() {
+	const renderItem = ({ item }) => (
+		<View style={styles.item}>
+			<Text style={styles.title}>{item.name}</Text>
+			{item.chart}
+		</View>
+	);
 	return (
-		<View style={{ alignItems: 'center' }}>
-			<ScrollView>
-				<Text>Temperature</Text>
-				<LineChart
-					data={data}
-					width={0.9 * screenWidth}
-					height={256}
-					verticalLabelRotation={30}
-					chartConfig={chartConfig}
-					withDots={false}
-					bezier
-					style={{
-						marginVertical: 10,
-						borderRadius: 20,
-					}}
-				/>
-			</ScrollView>
+		<View style={styles.container}>
+			<FlatList
+				data={data}
+				renderItem={renderItem}
+				keyExtractor={item => item.id}
+				contentContainerStyle={styles.list}
+			/>
 		</View>
 	);
 }
+
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		marginTop: StatusBar.currentHeight || 0,
+	},
+	item: {
+		marginVertical: 20,
+	},
+	title: {
+		fontSize: 20,
+		fontWeight: 'bold',
+		marginBottom: 10,
+	},
+	list: {
+		alignItems: 'center',
+	},
+});
