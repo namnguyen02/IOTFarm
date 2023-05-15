@@ -4,7 +4,6 @@ import { Text } from 'react-native-paper';
 import { checkName, checkEmail, checkPwd,auth } from '../utils';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { UIButton, UIInput, EscapeButton } from '../components';
-import { CommonActions } from '@react-navigation/native';
 
 export default function SignupScreen({ navigation }) {
 	const [name, setName] = useState({ value: '', error: '' });
@@ -24,12 +23,15 @@ export default function SignupScreen({ navigation }) {
 		createUserWithEmailAndPassword(auth, email.value, password.value)
 			.then((userCredential) => {
 				// Signed in
-				const user=userCredential.user
-				user.displayName = name.value
-				console.log(user)
 				setName({ value:name.value, error: '' });
 				setEmail({value:email.value, error:''})
 				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
 			})
 			.catch((error) => {
 				const errorCode = error.code;
@@ -37,14 +39,6 @@ export default function SignupScreen({ navigation }) {
 				setEmail({value:email.value, error:errorMessage});
 				// ..
 			});
-		if (email.error===''){
-			navigation.dispatch(
-				CommonActions.reset({
-					index: 0,
-					routes: [{ name: 'Main' }],
-				})
-			);
-		}
 	};
 	const bgImage = { uri: '../../assets/login_signup.png' };
 	return (

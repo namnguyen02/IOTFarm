@@ -40,18 +40,16 @@ export default function LoginScreen() {
 				console.log(error)
 				
 				setEmail({value:email.value, error:errorMessage});
-				return;
 				
 			});
-		// if (email.error===''){
-		// 	navigation.dispatch(
-		// 		CommonActions.reset({
-		// 			index: 0,
-		// 			routes: [{ name: 'Main' }],
-		// 		})
-		// 	);
-		// }
-		
+		if (email.error===''){
+			navigation.dispatch(
+				CommonActions.reset({
+					index: 0,
+					routes: [{ name: 'Main' }],
+				})
+			);
+		}
 	};
 	// const bgImage = { uri: '../../assets/images/login_signup.png' };
 	return (
