@@ -52,10 +52,10 @@ const NotificationsNavigator = () => {
 const LoginNavigator = () => {
 	return (
 		<Stack.Navigator>
-			<Stack.Screen name="Login" component={LoginScreen} options={{ headerTitle: '' }} />
+			<Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false  }} />
 			{/* <Stack.Screen name=" ForgotPwd" component={Forgotpassword} options={{ headerTitle: '' }} /> */}
-			<Stack.Screen name="ForgotPwd" component={ForgotPassword} options={{ headerTitle: '' }} />
-			<Stack.Screen name="Signup" component={SignupScreen} options={{ headerTitle: '' }} />
+			<Stack.Screen name="ForgotPwd" component={ForgotPassword} options={{ headerShown: false }} />
+			<Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
 		</Stack.Navigator>
 	);
 };

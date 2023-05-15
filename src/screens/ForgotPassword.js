@@ -2,38 +2,24 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, Linking, ImageBackground } from 'react-native';
 import qs from 'qs';
 import { UIButton, UIInput, EscapeButton } from '../components';
-import { checkEmail } from '../utils';
-
-async function sendEmail(to, body) {
-	let url = `mailto:${to}`;
-	// Create email link query
-	const query = qs.stringify({
-		subject: 'IOT FARM PASSWORD RESET',
-		body: body,
-	});
-	if (query.length) {
-		url += `?${query}`;
-	}
-	// check if we can use this link
-	const canOpen = await Linking.canOpenURL(url);
-	if (!canOpen) {
-		throw new Error('Provided URL can not be handled');
-	}
-	return Linking.openURL(url);
-}
-
+import { checkEmail,auth } from '../utils';
+import { sendPasswordResetEmail } from '@firebase/auth';
 export default function ForgotPassword({ navigation }) {
 	const [email, setEmail] = useState({ value: '', error: '' });
 
 	const sendResetPasswordEmail = () => {
-		const emailError = checkEmail(email.value);
-		if (emailError) {
-			setEmail({ ...email, error: emailError });
-			return;
-		}
-		const newpw = Math.floor(Math.random() * 10000000); //7 digits
-		sendEmail(email.value, newpw);
-		navigation.navigate('LoginScreen');
+		sendPasswordResetEmail(auth, email.value)
+			.then(() => {
+				// Password reset email sent!
+				// ..
+				navigation.navigate('LoginScreen');
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				setEmail({value:email.value,error:errorMessage})
+				// ..
+			});
 	};
 	return (
 		<ImageBackground
@@ -46,6 +32,7 @@ export default function ForgotPassword({ navigation }) {
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%',
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>

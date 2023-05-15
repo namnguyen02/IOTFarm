@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, View, Text, ImageBackground, StyleSheet } from 'react-native';
-import { EscapeButton, UIButton, UIInput } from '../components';
-import { checkEmail, checkPwd } from '../utils';
+import { UIButton, UIInput } from '../components';
+import { checkEmail, checkPwd,auth } from '../utils';
+import { signInWithEmailAndPassword } from '@firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/native';
 
@@ -19,12 +20,36 @@ export default function LoginScreen() {
 			setPassword({ ...password, error: passwordError });
 			return;
 		}
-		navigation.dispatch(
-			CommonActions.reset({
-				index: 0,
-				routes: [{ name: 'Main' }],
+		signInWithEmailAndPassword(auth, email.value, password.value)
+			.then((userCredential) => {
+				// Signed in
+				const user = userCredential.user
+				console.log(userCredential)
+				setEmail({value:email.value, error:''})
+				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
 			})
-		);
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				console.log(error)
+				
+				setEmail({value:email.value, error:errorMessage});
+				
+			});
+		if (email.error===''){
+			navigation.dispatch(
+				CommonActions.reset({
+					index: 0,
+					routes: [{ name: 'Main' }],
+				})
+			);
+		}
 	};
 	// const bgImage = { uri: '../../assets/images/login_signup.png' };
 	return (
@@ -38,6 +63,7 @@ export default function LoginScreen() {
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%'
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>

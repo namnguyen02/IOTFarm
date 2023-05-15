@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
 import { Text } from 'react-native-paper';
-import { checkName, checkEmail, checkPwd } from '../utils';
+import { checkName, checkEmail, checkPwd,auth } from '../utils';
+import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { UIButton, UIInput, EscapeButton } from '../components';
 
 export default function SignupScreen({ navigation }) {
@@ -19,10 +20,25 @@ export default function SignupScreen({ navigation }) {
 			setPassword({ ...password, error: passwordError });
 			return;
 		}
-		navigation.reset({
-			index: 0,
-			routes: [{ name: 'Main' }], // navigate to landing page here
-		});
+		createUserWithEmailAndPassword(auth, email.value, password.value)
+			.then((userCredential) => {
+				// Signed in
+				setName({ value:name.value, error: '' });
+				setEmail({value:email.value, error:''})
+				// ...
+				navigation.dispatch(
+					CommonActions.reset({
+						index: 0,
+						routes: [{ name: 'Main' }],
+					})
+				);
+			})
+			.catch((error) => {
+				const errorCode = error.code;
+				const errorMessage = error.message;
+				setEmail({value:email.value, error:errorMessage});
+				// ..
+			});
 	};
 	const bgImage = { uri: '../../assets/login_signup.png' };
 	return (
@@ -31,10 +47,13 @@ export default function SignupScreen({ navigation }) {
 			style={{
 				flex: 1,
 				backgroundColor: '#C7D7A7',
-				backgroundSize: '50%',
+				backgroundSize: 'cover',
+				backgroundosition: 'center',
 				flexDirection: 'column',
 				alignItems: 'center',
 				padding: 10,
+				height: '50%',
+				// width: '50%'
 			}}>
 			<View style={styles.title}>
 				<Text style={{ fontSize: 33 }}>IOT </Text>
